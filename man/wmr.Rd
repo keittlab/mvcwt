@@ -1,49 +1,16 @@
 \name{wmr}
 \alias{wmr}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-%%  ~~function to do ... ~~
-}
-\description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
-\usage{
-wmr(w, smoothing = 1)
-}
-%- maybe also 'usage' for other objects documented here.
+\title{Compute the wavelet modulus ratio of multivariate data}
+\description{Computes the wavelet modulus ratio described in Keitt (1998). A value of one indicated perfect synchrony among time series and a value of zero, perfect compensation.}
+\usage{wmr(w, smoothing = 1)}
 \arguments{
-  \item{w}{
-%%     ~~Describe \code{w} here~~
+  \item{w}{an object such as returned by \code{\link{mvcwt}}}
+  \item{smoothing}{width of smoothing kernel; larger values give more smoothing}
 }
-  \item{smoothing}{
-%%     ~~Describe \code{smoothing} here~~
-}
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
-\value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
+\value{an object of class "mvcwt"}
+\references{Keitt, T. H. 2008. Coherent ecological dynamics induced by large-scale disturbance. Nature 454:331–4. doi: 10.1038/nature06935.}
+\author{Timothy H. Keitt}
+\seealso{\code{\link{mvcwt}}, \code{\link{image.mvcwt}}}
 \examples{
 ##---- Should be DIRECTLY executable !! ----
 ##-- ==>  Define data, use random,
@@ -72,5 +39,4 @@ function (w, smoothing = 1)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{wavelets}

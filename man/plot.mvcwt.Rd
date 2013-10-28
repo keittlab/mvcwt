@@ -1,61 +1,22 @@
 \name{plot.mvcwt}
 \alias{plot.mvcwt}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-%%  ~~function to do ... ~~
-}
-\description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\title{Plot wavelet output}
+\description{Plot multivariate wavelet output across variables, scales or both.}
 \usage{
 plot.mvcwt(w, var = 1, scale = 1, titles = TRUE, z.fun = "Re", ...)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{w}{
-%%     ~~Describe \code{w} here~~
+  \item{w}{an object such as produced by \code{\link{mvcwt}}}
+  \item{var}{which variables to plot; can be a vector}
+  \item{scale}{which scales to plot; can be a vector; closest scale is picked}
+  \item{titles}{plot titles on each sub-plot?}
+  \item{z.fun}{apply function to data prior to plotting}
+  \item{\dots}{additional graphical parameters passed to \code{\link{plot}}}
 }
-  \item{var}{
-%%     ~~Describe \code{var} here~~
-}
-  \item{scale}{
-%%     ~~Describe \code{scale} here~~
-}
-  \item{titles}{
-%%     ~~Describe \code{titles} here~~
-}
-  \item{z.fun}{
-%%     ~~Describe \code{z.fun} here~~
-}
-  \item{\dots}{
-%%     ~~Describe \code{\dots} here~~
-}
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
-\value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
+\details{Makes one or more plots on the graphics device. Total number of plots is limited to 10.}
+\value{\code{w} is returned invisibly}
+\author{Timothy H. Keitt}
+\seealso{\code{\link{mvcwt}}}
 \examples{
 ##---- Should be DIRECTLY executable !! ----
 ##-- ==>  Define data, use random,
@@ -97,7 +58,4 @@ function (w, var = 1, scale = 1, titles = TRUE, z.fun = "Re",
     invisible(w)
   }
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{graphics}

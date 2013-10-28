@@ -5,10 +5,14 @@
 \usage{Morlet(lag)}
 \arguments{
   \item{lag}{A sequence of lag distances, typically a matrix}
-\details{This version of the Morlet is scaled to that the central frequency is exactly \eqn{2\pi}{2*Pi} radians, and is given by \deqn{\exp{-lag ^ 2 / 2 + 2i * \pi * lag} / \pi ^ 4}{exp(-lag ^ 2 / 2 + 2i * pi * lag) / pi ^ 4}. This is the simple version of the Morlet, sometimes referred to as as "psuedo-wavelet" as it it not precisely normalized, leading to some leakage into the DC component. It is therefore unsuited to reconstruction using the inverse transform.}
+\details{This version of the Morlet is scaled so that the central frequency is exactly 2Pi radians. This is the simple version of the Morlet, sometimes referred to as a psuedo-wavelet as it it not precisely normalized, leading to some leakage into the DC component. It is therefore unsuited to reconstruction using the inverse transform.}
+
 \value{A set of Morlet filters, typically as a matrix}
+
 \author{Timothy H. Keitt}
+
 \seealso{\code{\link{mvcwt}}}
+
 \examples{
 ##---- Should be DIRECTLY executable !! ----
 ##-- ==>  Define data, use random,

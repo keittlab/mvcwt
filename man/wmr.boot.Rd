@@ -1,52 +1,20 @@
 \name{wmr.boot}
 \alias{wmr.boot}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-%%  ~~function to do ... ~~
-}
-\description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\title{Boot strap p-values for wavelet modulus ratio}
+\description{Performs a phase-randomization bootstrap estimate of the null hypothesis of independent time series}
 \usage{
 wmr.boot(w, smoothing = 1, reps = 1000)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{w}{
-%%     ~~Describe \code{w} here~~
+  \item{w}{an object such as returned by \code{\link{mvcwt}}}
+  \item{smoothing}{degree of smoothing; larger values give greater smoothing}
+  \item{reps}{number of repetitions}
 }
-  \item{smoothing}{
-%%     ~~Describe \code{smoothing} here~~
-}
-  \item{reps}{
-%%     ~~Describe \code{reps} here~~
-}
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
-\value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
+\details{The phases are randomized \code{reps} times for each combination of input variable and scale. This package depends heavily on the \code{dopar} function in the \code{foreach} package. If you do not have a lot of cores available to you, you may need to let this run overnight.}
+\value{an object of class "mvcwt" suitable for use with \code{\link{contour.mvcwt}}.}
+\references{Keitt, T. H. 2008. Coherent ecological dynamics induced by large-scale disturbance. Nature 454:331–4. doi: 10.1038/nature06935.}
+\author{Timothy H. Keitt}
+\seealso{\code{\link{mvcwt}}, \code{\link{wmr}}}
 \examples{
 ##---- Should be DIRECTLY executable !! ----
 ##-- ==>  Define data, use random,
@@ -85,5 +53,4 @@ function (w, smoothing = 1, reps = 1000)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{statistics}
