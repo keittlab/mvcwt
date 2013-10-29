@@ -4,9 +4,9 @@
 mvcwt = function(x, y,
                  scale.trim = 1,
                  scale.exp = 0.5,
-                 nscales = length(unlist(x)),
-                 min.scale = 2 * scale.trim * median(diff(unlist(x))),
-                 max.scale = diff(range(unlist(x))) / scale.trim / 2,
+                 nscales = length(as.vector(unlist(x))),
+                 min.scale = 2 * scale.trim * median(diff(as.vector(unlist(x)))),
+                 max.scale = diff(range(as.vector(unlist(x)))) / scale.trim / 2,
                  scales = log2Bins(min.scale, max.scale, nscales),
                  loc = regularize(as.vector(unlist(x))),
                  wave.fun = "Morlet")
@@ -33,51 +33,54 @@ wmr = function(w, smoothing = 1)
     mods = Mod(rowSums(z, dims = 2))
     smod = rowSums(Mod(z), dims = 2)
     lmat = lagMat(x)
-    exports = c("Gauss", "smfac")
-    foreach(i = 1:length(y), .export = exports) %dopar%
+    exports = c("Gauss", "smoothing")
+    flibs = c("mvcwt")
+    foreach(i = 1:length(y),
+            .export = exports,
+            .packages = flibs) %dopar%
     {
       kern = Gauss(lmat / y[i] / smoothing)
       mods[,i] = kern %*% mods[,i]
       smod[,i] = kern %*% smod[,i]
     }
     modrat = mods / smod
-    i = which(abs(mods - smod) < sqrt(.Machine$double.eps))
-    modrat[i] = 1.0
     dim(modrat) = c(length(x), length(y), 1)
     structure(list(x = x, y = y, z = modrat), class = "mvcwt")
   })
 }
 
-wmr.boot = function(w, smoothing = 1, reps = 1000)
+wmr.boot = function(w, smoothing = 1, reps = 1000, mr.func = "wmr")
 {
   require(foreach)
-  mr.obs = wmr(w, smfac = smfac)
+  mr.func = match.fun(mr.func)
+  mr.obs = wmr(w, smoothing = smoothing)
   with(w, {
     nloc = length(x)
     nvars = dim(z)[3]
     nscales = length(y)
-    exports = c("reps", "wmr", "lagMat", "regularize", "seqn",
-                "Gauss", "mr.obs", "nscales", "smfac")
-    flibs = c("foreach")
-    mr.obs$z = foreach(i = 1:nscales,
-                       .combine = c,
-                       .export = exports,
-                       .packages = flibs) %dopar%
+    exports = c("reps", "wmr", "lagMat", "regularize", "mr.func",
+                "Gauss", "mr.obs", "nscales", "smoothing")
+    flibs = c("mvcwt")
+    mr.obs$z.boot = foreach(i = 1:nscales,
+                            .combine = c,
+                            .export = exports,
+                            .packages = flibs) %dopar%
     {
       mr.boot = foreach(j = 1:reps,
                         .combine = cbind,
-                        .inorder = FALSE) %do%
+                        .inorder = FALSE) %dopar%
       {
         rphase = t(array(runif(nvars, -pi, pi), dim = c(nvars, nloc)))
         zp = z[, i,, drop = FALSE] * complex(argument = rphase)
-        as.vector(wmr(list(x = x, y = y[i], z = zp), smoothing = smoothing)$z)
+        as.vector(mr.func(list(x = x, y = y[i], z = zp), smoothing = smoothing)$z)
       }
-      foreach(j = 1:nloc, .combine = c) %do%
+      res = foreach(j = 1:nloc, .combine = c) %dopar%
       {
          ecdf(mr.boot[j, ])(mr.obs$z[j, i,])
       }
+      res
     }
-    dim(mr.obs$z) = c(length(x), length(y), 1)
+    dim(mr.obs$z.boot) = c(length(x), length(y), 1)
     return(mr.obs)
   })
 }
@@ -129,6 +132,14 @@ image.mvcwt = function(w, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
     {
       image(x, y, z.fun(z[,,i]), log = "y", col = pal, axes = FALSE, ...)
       if ( i %% 2 ) axis(2) else axis(4)
+      if ( ! is.null(w$z.boot) )
+      {
+        z.boot = 1 - abs(1 - 2 * z.boot)
+        contour(x, y, z.boot[,,i], levels = 0.05, lty = 3, add = TRUE, drawlabels = FALSE)
+        zb = p.adjust(as.vector(z.boot), method = "BY")
+        dim(zb) = dim(z.boot)
+        contour(x, y, zb[,,i], levels = 0.05, lwd = 2, add = TRUE, drawlabels = FALSE)
+      }
       if ( is.finite(bound) )
       {
         lines(min(x) + bound * y, y, lty = 2, lwd = 2, col = "darkgrey")
@@ -148,7 +159,6 @@ contour.mvcwt = function(w, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
   z.fun = match.fun(z.fun)
   opar = par(no.readonly = TRUE)
   if ( reset.par ) on.exit(par(opar))
-  pal = colorRampPalette(rev(brewer.pal(11, 'Spectral')))(1024)
   with(w, {
     nvar = ifelse(length(dim(z)) == 3, dim(z)[3], 1)
     par(mfrow = c(nvar, 1), mar = rep(0.2, 4), oma = rep(5, 4))

@@ -1,14 +1,9 @@
 \name{mvcwt-package}
 \alias{mvcwt-package}
-\alias{mvcwt}
 \docType{package}
-\title{
-What the package does (short line)
-~~ package title ~~
-}
+\title{Wavelet transform of multivariate time series}
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+Computes continuous wavelet transform of multiple irregularly sampled time series.
 }
 \details{
 \tabular{ll}{
@@ -16,26 +11,24 @@ Package: \tab mvcwt\cr
 Type: \tab Package\cr
 Version: \tab 1.0\cr
 Date: \tab 2013-10-27\cr
-License: \tab What license is it under?\cr
+License: \tab GPL\cr
 }
-~~ An overview of how to use the package, including the most important functions ~~
-}
-\author{
-Who wrote it
+The main functions are \code{\link{mvcwt}}, which computes the wavelet transform of multiple time series, and \code{\link{wmr}}, which computes the wavelet modulus ratio, a measure of time series coherence.
 
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+Note that this is a complete rewrite of the code used in the reference below, and as such it is not well tested. It may give different or inaccurate results. I recommend you run tests on known data.}
+\author{Timothy H. Keitt
+
+Tim Keitt <tkeitt@gmail.com>
 }
-\references{
-~~ Literature or other references for background information ~~
-}
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in the R documentation ~~
-~~ directory ~~
+\references{Keitt, T. H. 2008. Coherent ecological dynamics induced by large-scale disturbance. Nature 454:331-4. doi:10.1038/nature06935.}
 \keyword{ package }
-\seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
-}
 \examples{
-~~ simple examples of the most important functions ~~
+x = seq(-pi, pi, len = 200)
+y1 = sin(8 * x) + sin(32 * x)
+y2 = sin(8 * (x + pi/6)) + sin(32 * x)
+matplot(x, cbind(y1, y2), type = "l", lty = 1)
+w = mvcwt(x, cbind(y1, y2), nscales = 5)
+plot(w, var = 1:2, scale = w$y)
+mr = wmr(w)
+image(mr)
 }

@@ -6,9 +6,9 @@
 mvcwt(x, y,
       scale.trim = 1,
       scale.exp = 0.5,
-      nscales = length(unlist(x)),
-      min.scale = 2 * scale.trim * median(diff(unlist(x))),
-      max.scale = diff(range(unlist(x)))/scale.trim/2,
+      nscales = length(as.vector(unlist(x))),
+      min.scale = 2 * scale.trim * median(diff(as.vector(unlist(x)))),
+      max.scale = diff(range(as.vector(unlist(x)))) / scale.trim / 2,
       scales = log2Bins(min.scale, max.scale, nscales),
       loc = regularize(as.vector(unlist(x))),
       wave.fun = "Morlet")
@@ -25,35 +25,16 @@ mvcwt(x, y,
   \item{loc}{the loci at which to evalues the wavelet function}
   \item{wave.fun}{a wavelet function}
 }
-\details{By default, a regular sequence of \code{x} values are generated and the wavelet function is evaluated at each of these. You can override this by specifying \code{loc}. Also a log-base-2 sequence of scales is generated spanning from the approximate (for irregular data) Nyquist frequency to unit frequency. The manner in which the sequence of scales is determined can be overriden in various ways as shown above. The user can subsitute the wavelet function, but it is assumed that the wavelet transfer function peaks at 2Pi radians.}
+\details{By default, a regular sequence of \code{x} values are generated and the wavelet function is evaluated at each of these. You can override this by specifying \code{loc}. A log-base-2 sequence of scales is generated spanning from the approximate (for irregular data) Nyquist frequency to unit frequency. The manner in which the sequence of scales is determined can be overriden in various ways as shown above. The user can subsitute the wavelet function, but it is assumed that the wavelet transfer function peaks at 2Pi radians, i.e., \code{wave.fun(lag / s)} is centered at scale \code{s}. The output energy or wavelet variance is scaled according to \code{1 / scale ^ scale.exp}. The default \code{scale.exp = 0.5} gives a flat white-noise scalogram, but the choice is arbitrary and you may wish to emphsize or demphasize coarse scale variation.}
 \value{an object of class "mvcwt" with fields \code{x}, \code{y} and \code{z}, which give the loci, scales and wavelet coefficient respectively.}
-\references{Keitt, T. H. 2008. Coherent ecological dynamics induced by large-scale disturbance. Nature 454:331–4. doi: 10.1038/nature06935.}
+\note{This function uses \code{dopar} from the \code{foreach} package. Registering a parallel backend is highly recommneded for large datasets. Note that \code{x} and \code{y} are coersed to vector and matrix respectively. If you feed this function something that cannot be coersed correctly, you will get strange results.}
+\references{Keitt, T. H. 2008. Coherent ecological dynamics induced by large-scale disturbance. Nature 454:331-4. doi:10.1038/nature06935.}
 \author{Timothy H. Keitt}
-\seealso{\code{\link{Morelet}}, \code{\link{wmr}}}
+\seealso{\code{\link{Morlet}}, \code{\link{wmr}}}
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (x, y, scale.trim = 1, scale.exp = 0.5, nscales = length(unlist(x)), 
-    min.scale = 2 * scale.trim * median(diff(unlist(x))), max.scale = diff(range(unlist(x)))/scale.trim/2, 
-    scales = log2Bins(min.scale, max.scale, nscales), loc = regularize(as.vector(unlist(x))), 
-    wave.fun = "Morlet") 
-{
-    require(foreach)
-    wave.fun = match.fun(wave.fun)
-    x = as.vector(unlist(x))
-    lmat = lagMat(x, loc)
-    y = matrix(unlist(y), nrow = length(x))
-    w = foreach(s = scales) \%dopar\% {
-        Conj(wave.fun(lmat/s)/s^scale.exp) \%*\% y
-    }
-    w = array(unlist(w), dim = c(length(loc), ncol(y), length(scales)))
-    w = aperm(w, perm = c(1, 3, 2))
-    structure(list(x = loc, y = scales, z = w), class = "mvcwt")
-  }
+  data(sunspot.year)
+  w = mvcwt(time(sunspot.year), sunspot.year, min.scale = 5, max.scale = 40)
+  image(w, "Mod", reset.par = FALSE)
+  contour(w, "Mod", add = TRUE)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
 \keyword{wavelets}

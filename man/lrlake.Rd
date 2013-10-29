@@ -7,24 +7,24 @@
 \format{
   A data frame with 592 observations on the following 18 variables.
   \describe{
-    \item{\code{Month}}{a numeric vector}
-    \item{\code{Day}}{a numeric vector}
-    \item{\code{Year}}{a numeric vector}
-    \item{\code{LRL.Day}}{a numeric vector}
-    \item{\code{Year.Day}}{a numeric vector}
-    \item{\code{Surface.pH}}{a numeric vector}
-    \item{\code{Station}}{a numeric vector}
-    \item{\code{Basin}}{a factor with levels \code{Reference} \code{Treatment}}
-    \item{\code{Diacyclops}}{a numeric vector}
-    \item{\code{Mesocyclops}}{a numeric vector}
-    \item{\code{Tropocyclops}}{a numeric vector}
-    \item{\code{Leptodiaptomus}}{a numeric vector}
-    \item{\code{Bosminid}}{a numeric vector}
-    \item{\code{D..dubia}}{a numeric vector}
-    \item{\code{D..parvula}}{a numeric vector}
-    \item{\code{D..catawba}}{a numeric vector}
-    \item{\code{Diaphanosoma.birgei}}{a numeric vector}
-    \item{\code{Holopedium.gibberum}}{a numeric vector}
+    \item{\code{Month}}{month of year}
+    \item{\code{Day}}{day of month}
+    \item{\code{Year}}{sample year}
+    \item{\code{LRL.Day}}{days from start of study}
+    \item{\code{Year.Day}}{day of year}
+    \item{\code{Surface.pH}}{pH measured at lake surface}
+    \item{\code{Station}}{sample station}
+    \item{\code{Basin}}{lake basin, either \code{Reference} or \code{Treatment}}
+    \item{\code{Diacyclops}}{species data}
+    \item{\code{Mesocyclops}}{species data}
+    \item{\code{Tropocyclops}}{species data}
+    \item{\code{Leptodiaptomus}}{species data}
+    \item{\code{Bosminid}}{species data}
+    \item{\code{D..dubia}}{species data}
+    \item{\code{D..parvula}}{species data}
+    \item{\code{D..catawba}}{species data}
+    \item{\code{Diaphanosoma.birgei}}{species data}
+    \item{\code{Holopedium.gibberum}}{species data}
   }
 }
 \source{http://lter.limnology.wisc.edu/}

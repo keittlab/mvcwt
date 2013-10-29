@@ -3,7 +3,7 @@
 \title{Plot wavelet output}
 \description{Plot multivariate wavelet output across variables, scales or both.}
 \usage{
-plot.mvcwt(w, var = 1, scale = 1, titles = TRUE, z.fun = "Re", ...)
+\method{plot}{mvcwt}(w, var = 1, scale = 1, titles = TRUE, z.fun = "Re", ...)
 }
 \arguments{
   \item{w}{an object such as produced by \code{\link{mvcwt}}}
@@ -18,44 +18,10 @@ plot.mvcwt(w, var = 1, scale = 1, titles = TRUE, z.fun = "Re", ...)
 \author{Timothy H. Keitt}
 \seealso{\code{\link{mvcwt}}}
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (w, var = 1, scale = 1, titles = TRUE, z.fun = "Re", 
-    ...) 
-{
-    z.fun = match.fun(z.fun)
-    opar = par(no.readonly = TRUE)
-    on.exit(par(opar))
-    with(w, {
-        nvar = length(var)
-        nscal = length(scale)
-        par(mfrow = c(nvar * nscal, 1), mar = rep(0.6, 4), oma = rep(5, 
-            4), xpd = NA)
-        for (s in scale) {
-            scale.i = which.min(abs(y - s))
-            for (i in 1:nvar) {
-                z.out = z.fun(z[, scale.i, var[i]])
-                plot(x, z.out, xlab = NA, ylab = NA, axes = FALSE, 
-                  type = "l", lwd = 2, ...)
-                lines(range(x), rep(median(z.out), 2), lty = 2)
-                if (titles) {
-                  tstr = paste("Scale =", signif(y[scale.i], 
-                    2), "Var =", var[i], sep = " ")
-                  title(main = tstr, line = 0.25)
-                }
-                if (i\%\%2) 
-                  axis(2)
-                else axis(4)
-            }
-        }
-        axis(1)
-        mtext("Location", 1, 3, outer = TRUE)
-        mtext("Value", 2, 3, outer = TRUE)
-    })
-    invisible(w)
-  }
+data(lrlake)
+x = subset(lrlake, Basin == "Reference", LRL.Day) / 365.25
+y = subset(lrlake, Basin == "Reference", -(1:8))
+w = mvcwt(x, y, min.scale = 0.25, max.scale = 4)
+plot(w, var = 1:10)
 }
 \keyword{graphics}
