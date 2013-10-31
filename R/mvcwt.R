@@ -53,7 +53,7 @@ wmr.boot = function(w, smoothing = 1, reps = 1000, mr.func = "wmr")
 {
   require(foreach)
   mr.func = match.fun(mr.func)
-  mr.obs = wmr(w, smoothing = smoothing)
+  mr.obs = mr.func(w, smoothing = smoothing)
   with(w, {
     nloc = length(x)
     nvars = dim(z)[3]
