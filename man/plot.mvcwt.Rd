@@ -3,10 +3,10 @@
 \title{Plot wavelet output}
 \description{Plot multivariate wavelet output across variables, scales or both.}
 \usage{
-\method{plot}{mvcwt}(w, var = 1, scale = 1, titles = TRUE, z.fun = "Re", ...)
+\method{plot}{mvcwt}(x, var = 1, scale = 1, titles = TRUE, z.fun = "Re", ...)
 }
 \arguments{
-  \item{w}{an object such as produced by \code{\link{mvcwt}}}
+  \item{x}{an object such as produced by \code{\link{mvcwt}}}
   \item{var}{which variables to plot; can be a vector}
   \item{scale}{which scales to plot; can be a vector; closest scale is picked}
   \item{titles}{plot titles on each sub-plot?}

@@ -3,10 +3,10 @@
 \title{Make contour plot of a \code{\link{mvcwt}} object}
 \description{Draws a contour plot}
 \usage{
-\method{contour}{mvcwt}(w, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
+\method{contour}{mvcwt}(x, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
 }
 \arguments{
-  \item{w}{an object produced by \code{\link{mvcwt}} or \code{\link{wmr}}}
+  \item{x}{an object produced by \code{\link{mvcwt}} or \code{\link{wmr}}}
   \item{z.fun}{a function to apply to the data prior to plotting}
   \item{bound}{if finite, draw boundary lines \code{bound * scale} from plot boundaries}
   \item{reset.par}{if true, reset the graphical parameters on exit}

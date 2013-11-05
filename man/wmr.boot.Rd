@@ -3,7 +3,7 @@
 \title{Boot strap p-values for wavelet modulus ratio}
 \description{Performs a phase-randomization bootstrap estimate of the null hypothesis of independent time series}
 \usage{
-wmr.boot(w, smoothing = 1, reps = 1000)
+wmr.boot(w, smoothing = 1, reps = 1000, mr.func = "wmr")
 }
 \arguments{
   \item{w}{an object such as returned by \code{\link{mvcwt}}}

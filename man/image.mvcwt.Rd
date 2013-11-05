@@ -3,10 +3,10 @@
 \title{Draw a heatmap of a \code{\link{mvcwt}} object}
 \description{Draws one or more heatmaps}
 \usage{
-\method{image}{mvcwt}(w, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
+\method{image}{mvcwt}(x, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
 }
 \arguments{
-  \item{w}{an object as returned by \code{\link{mvcwt}}}
+  \item{x}{an object as returned by \code{\link{mvcwt}}}
   \item{z.fun}{a function applied to the data before plotting}
   \item{bound}{if finite, draw lines \code{bound * scale} units inside the plot boundaries}
   \item{reset.par}{if true, reset graphical parameters on exit}

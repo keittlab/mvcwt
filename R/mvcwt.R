@@ -11,7 +11,7 @@ mvcwt = function(x, y,
                  loc = regularize(as.vector(unlist(x))),
                  wave.fun = "Morlet")
 {
-  require(foreach)
+  s = 1 # this is a workaround for a bug in R's code checking
   wave.fun = match.fun(wave.fun)
   x = as.vector(unlist(x))
   lmat = lagMat(x, loc)
@@ -51,7 +51,6 @@ wmr = function(w, smoothing = 1)
 
 wmr.boot = function(w, smoothing = 1, reps = 1000, mr.func = "wmr")
 {
-  require(foreach)
   mr.func = match.fun(mr.func)
   mr.obs = mr.func(w, smoothing = smoothing)
   with(w, {
@@ -85,12 +84,12 @@ wmr.boot = function(w, smoothing = 1, reps = 1000, mr.func = "wmr")
   })
 }
 
-plot.mvcwt = function(w, var = 1, scale = 1, titles = TRUE, z.fun = "Re", ...)
+plot.mvcwt = function(x, var = 1, scale = 1, titles = TRUE, z.fun = "Re", ...)
 {
   z.fun = match.fun(z.fun)
   opar = par(no.readonly = TRUE)
   on.exit(par(opar))
-  with(w, {
+  with(x, {
     nvar = length(var)
     nscal = length(scale)
     par(mfrow = c(nvar * nscal, 1), mar = rep(0.6, 4), oma = rep(5, 4), xpd = NA)
@@ -114,18 +113,16 @@ plot.mvcwt = function(w, var = 1, scale = 1, titles = TRUE, z.fun = "Re", ...)
     mtext("Location", 1, 3, outer = TRUE)
     mtext("Value", 2, 3, outer = TRUE)
   })  
-  invisible(w)
+  invisible(x)
 }
 
-image.mvcwt = function(w, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
+image.mvcwt = function(x, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
 {
-  require(grDevices)
-  require(RColorBrewer)
   z.fun = match.fun(z.fun)
   opar = par(no.readonly = TRUE)
   if ( reset.par ) on.exit(par(opar))
   pal = colorRampPalette(rev(brewer.pal(11, 'Spectral')))(1024)
-  with(w, {
+  with(x, {
     nvar = ifelse(length(dim(z)) == 3, dim(z)[3], 1)
     par(mfrow = c(nvar, 1), mar = rep(0.2, 4), oma = rep(5, 4))
     for ( i in 1:nvar )
@@ -151,15 +148,15 @@ image.mvcwt = function(w, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
     mtext("Location", 1, 3, outer = TRUE)
     mtext("Scale", 2, 3, outer = TRUE)
   })
-  return(invisible(w))     
+  return(invisible(x))     
 }
 
-contour.mvcwt = function(w, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
+contour.mvcwt = function(x, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
 {
   z.fun = match.fun(z.fun)
   opar = par(no.readonly = TRUE)
   if ( reset.par ) on.exit(par(opar))
-  with(w, {
+  with(x, {
     nvar = ifelse(length(dim(z)) == 3, dim(z)[3], 1)
     par(mfrow = c(nvar, 1), mar = rep(0.2, 4), oma = rep(5, 4))
     for ( i in 1:nvar )
@@ -177,7 +174,7 @@ contour.mvcwt = function(w, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
     mtext("Location", 1, 3, outer = TRUE)
     mtext("Scale", 2, 3, outer = TRUE)
   })
-  return(invisible(w))     
+  return(invisible(x))     
 }
 
 midp <- function(x)
