@@ -1,15 +1,19 @@
 #
 # All code copyright 2013 Timothy H. Keitt
 #
+
+get.nscales = function(x) length(as.vector(unlist(x)))
+get.min.scale = function(x) 2 * median(diff(as.vector(unlist(x))))
+get.max.scale = function(x) diff(range(as.vector(unlist(x)))) / 2
+  
 mvcwt = function(x, y,
                  scale.trim = 1,
                  scale.exp = 0.5,
-                 nscales = length(as.vector(unlist(x))),
-                 min.scale = 2 * scale.trim * median(diff(as.vector(unlist(x)))),
-                 max.scale = diff(range(as.vector(unlist(x)))) / scale.trim / 2,
+                 nscales = get.nscales(x),
+                 min.scale = scale.trim * get.min.scale(x),
+                 max.scale = get.max.scale(x) / scale.trim,
                  scales = log2Bins(min.scale, max.scale, nscales),
-                 loc = regularize(as.vector(unlist(x))),
-                 wave.fun = "Morlet")
+                 loc = regularize(x), wave.fun = "Morlet")
 {
   s = 1 # this is a workaround for a bug in R's code checking
   wave.fun = match.fun(wave.fun)
@@ -25,7 +29,11 @@ mvcwt = function(x, y,
   structure(list(x = loc, y = scales, z = w), class = "mvcwt")
 }
 
-print.mvcwt = function(x, ...) print(str(x), ...)
+print.mvcwt = function(x, ...)
+{
+  print(str(x), ...)
+  invisible(x)
+}
 
 wmr = function(w, smoothing = 1)
 {
@@ -41,9 +49,9 @@ wmr = function(w, smoothing = 1)
                      .packages = flibs) %dopar%
     {
       kern = Gauss(lmat / y[i] / smoothing)
-      mods[,i] = kern %*% mods[,i]
-      smod[,i] = kern %*% smod[,i]
-      mods[,i] / smod[,i]
+      modsv = kern %*% mods[,i]
+      smodv = kern %*% smod[,i]
+      modsv / smodv
     }
     dim(modrat) = c(length(x), length(y), 1)
     structure(list(x = x, y = y, z = modrat), class = "mvcwt")
@@ -130,7 +138,7 @@ image.mvcwt = function(x, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
     {
       image(x, y, z.fun(z[,,i]), log = "y", col = pal, axes = FALSE, ...)
       if ( i %% 2 ) axis(2) else axis(4)
-      if ( ! is.null(w$z.boot) )
+      if ( exists("z.boot") && !is.null(z.boot) )
       {
         z.boot = 1 - abs(1 - 2 * z.boot)
         contour(x, y, z.boot[,,i], levels = 0.05, lty = 3, add = TRUE, drawlabels = FALSE)
@@ -188,7 +196,7 @@ log2Bins <- function(min, max, nbins)
   2 ^ midp(seq(log2(min), log2(max), length = nbins + 1))
 }
 
-regularize <- function(x, nsteps = length(x))
+regularize <- function(x, nsteps = length(as.vector(unlist(x))))
 {
   seq(min(x), max(x), length = nsteps)
 }

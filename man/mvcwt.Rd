@@ -7,12 +7,11 @@
 mvcwt(x, y,
       scale.trim = 1,
       scale.exp = 0.5,
-      nscales = length(as.vector(unlist(x))),
-      min.scale = 2 * scale.trim * median(diff(as.vector(unlist(x)))),
-      max.scale = diff(range(as.vector(unlist(x)))) / scale.trim / 2,
+      nscales = get.nscales(x),
+      min.scale = scale.trim * get.min.scale(x),
+      max.scale = get.max.scale(x) / scale.trim,
       scales = log2Bins(min.scale, max.scale, nscales),
-      loc = regularize(as.vector(unlist(x))),
-      wave.fun = "Morlet")
+      loc = regularize(x), wave.fun = "Morlet")
 }
 \arguments{
   \item{x}{sample locations}

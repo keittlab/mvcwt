@@ -21,6 +21,6 @@ if ( !is.null(run.it) && run.it )
   w = mvcwt(x, y, min.scale = 0.25, max.scale = 4)
   mr = wmr(w)
   image(mr, reset.par = FALSE)
-  contour(mr, bound = NA, drawlabels = FALSE, add = TRUE)
+  contour(mr, bound = NA, add = TRUE)
 }}
 \keyword{wavelets}
