@@ -1,7 +1,7 @@
 Package: mvcwt
 Type: Package
 Title: Wavelet analysis of multiple time series
-Version: 1.1
+Version: 1.2
 Date: 2013-10-27
 Author: Timothy H. Keitt
 Maintainer: Tim Keitt <tkeitt@gmail.com>
