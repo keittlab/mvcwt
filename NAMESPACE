@@ -6,3 +6,5 @@ export(mvcwt)
 export(plot.mvcwt)
 export(wmr.boot)
 export(wmr)
+export(print.mvcwt)
+

@@ -12,12 +12,15 @@
 \author{Timothy H. Keitt}
 \seealso{\code{\link{mvcwt}}, \code{\link{image.mvcwt}}}
 \examples{
-data(lrlake)
-x = subset(lrlake, Basin == "Treatment", LRL.Day) / 365.25
-y = subset(lrlake, Basin == "Treatment", -(1:8))
-w = mvcwt(x, y, min.scale = 0.25, max.scale = 4)
-mr = wmr(w)
-image(mr, reset.par = FALSE)
-contour(mr, add = TRUE)
-}
+run.it = getOption("run.long.examples")     
+if ( !is.null(run.it) && run.it )
+{
+  data(lrlake)
+  x = subset(lrlake, Basin == "Treatment", LRL.Day) / 365.25
+  y = subset(lrlake, Basin == "Treatment", -(1:8))
+  w = mvcwt(x, y, min.scale = 0.25, max.scale = 4)
+  mr = wmr(w)
+  image(mr, reset.par = FALSE)
+  contour(mr, bound = NA, drawlabels = FALSE, add = TRUE)
+}}
 \keyword{wavelets}

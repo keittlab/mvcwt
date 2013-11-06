@@ -13,14 +13,17 @@
   \item{\dots}{additional arguments passed to \code{\link{image}}}
 }
 \details{This function will draw a series of heatmaps on the graphical device. If you want to add additional graphical elements, set \code{reset.par} to false.}
-\value{\code{w} is returned invisibly}
+\value{\code{x} is returned invisibly}
 \author{Timothy H. Keitt}
 \seealso{\code{\link{mvcwt}}, \code{\link{wmr}}}
 \examples{
-data(lrlake)
-x = subset(lrlake, Basin == "Treatment", LRL.Day) / 365.25
-y = subset(lrlake, Basin == "Treatment", -(1:8))
-w = mvcwt(x, y, min.scale = 0.25, max.scale = 4)
-image(w, z.fun = "Mod")
-}
+run.it = getOption("run.long.examples")     
+if ( !is.null(run.it) && run.it )
+{
+  data(lrlake)
+  x = subset(lrlake, Basin == "Treatment", LRL.Day) / 365.25
+  y = subset(lrlake, Basin == "Treatment", -(1:8))
+  w = mvcwt(x, y, min.scale = 0.25, max.scale = 4)
+  image(w, z.fun = "Mod")
+}}
 \keyword{graphics}

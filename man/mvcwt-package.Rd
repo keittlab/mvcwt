@@ -23,12 +23,15 @@ Tim Keitt <tkeitt@gmail.com>
 \references{Keitt, T. H. 2008. Coherent ecological dynamics induced by large-scale disturbance. Nature 454:331-4. doi:10.1038/nature06935.}
 \keyword{ package }
 \examples{
-x = seq(-pi, pi, len = 200)
-y1 = sin(8 * x) + sin(32 * x)
-y2 = sin(8 * (x + pi/6)) + sin(32 * x)
-matplot(x, cbind(y1, y2), type = "l", lty = 1)
-w = mvcwt(x, cbind(y1, y2), nscales = 5)
-plot(w, var = 1:2, scale = w$y)
-mr = wmr(w)
-image(mr)
-}
+run.it = getOption("run.long.examples")     
+if ( !is.null(run.it) && run.it )
+{
+  x = seq(-pi, pi, len = 200)
+  y1 = sin(8 * x) + sin(32 * x)
+  y2 = sin(8 * (x + pi/6)) + sin(32 * x)
+  matplot(x, cbind(y1, y2), type = "l", lty = 1)
+  w = mvcwt(x, cbind(y1, y2), nscales = 5)
+  plot(w, var = 1:2, scale = w$y)
+  mr = wmr(w)
+  image(mr)
+}}

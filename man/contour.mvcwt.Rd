@@ -13,15 +13,18 @@
   \item{\dots}{passed to the \code{\link{contour}} function}
 }
 \details{Draws a contour plot. If you want to add more plotting elements, set \code{reset.pars} to false.}
-\value{The object \code{w} is returned invisibly.}
+\value{The object \code{x} is returned invisibly.}
 \author{Timothy H. Keitt}
 \seealso{\code{\link{mvcwt}}, \code{\link{wmr}}}
 \keyword{graphics}
 \examples{
-data(lrlake)
-x = subset(lrlake, Basin == "Treatment", LRL.Day) / 365.25
-y = subset(lrlake, Basin == "Treatment", -(1:8))
-w = mvcwt(x, y, min.scale = 0.25, max.scale = 4)
-mr = wmr(w)
-contour(mr)
-}
+run.it = getOption("run.long.examples")     
+if ( !is.null(run.it) && run.it )
+{
+  data(lrlake)
+  x = subset(lrlake, Basin == "Treatment", LRL.Day) / 365.25
+  y = subset(lrlake, Basin == "Treatment", -(1:8))
+  w = mvcwt(x, y, min.scale = 0.25, max.scale = 4)
+  mr = wmr(w)
+  contour(mr)
+}}

@@ -1,5 +1,6 @@
 \name{mvcwt}
 \alias{mvcwt}
+\alias{print.mvcwt}
 \title{Computes the wavelet transform of a multivariate time series}
 \description{This function takes set a set of seqences as columns in a matrix and computes the continuous wavelet transform on each.}
 \usage{
@@ -32,9 +33,12 @@ mvcwt(x, y,
 \author{Timothy H. Keitt}
 \seealso{\code{\link{Morlet}}, \code{\link{wmr}}}
 \examples{
+run.it = getOption("run.long.examples")     
+if ( !is.null(run.it) && run.it )
+{
   data(sunspot.year)
   w = mvcwt(time(sunspot.year), sunspot.year, min.scale = 5, max.scale = 40)
   image(w, "Mod", reset.par = FALSE)
-  contour(w, "Mod", add = TRUE)
-}
+  contour(w, "Mod", bound = NA, drawlabels = FALSE, add = TRUE)
+}}
 \keyword{wavelets}

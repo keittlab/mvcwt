@@ -25,7 +25,7 @@ mvcwt = function(x, y,
   structure(list(x = loc, y = scales, z = w), class = "mvcwt")
 }
 
-print.mvcwt = function(w) print(str(w))
+print.mvcwt = function(x, ...) print(str(x), ...)
 
 wmr = function(w, smoothing = 1)
 {
@@ -35,15 +35,16 @@ wmr = function(w, smoothing = 1)
     lmat = lagMat(x)
     exports = c("Gauss", "smoothing")
     flibs = c("mvcwt")
-    foreach(i = 1:length(y),
-            .export = exports,
-            .packages = flibs) %dopar%
+    modrat = foreach(i = 1:length(y),
+                     .combine = cbind,
+                     .export = exports,
+                     .packages = flibs) %dopar%
     {
       kern = Gauss(lmat / y[i] / smoothing)
       mods[,i] = kern %*% mods[,i]
       smod[,i] = kern %*% smod[,i]
+      mods[,i] / smod[,i]
     }
-    modrat = mods / smod
     dim(modrat) = c(length(x), length(y), 1)
     structure(list(x = x, y = y, z = modrat), class = "mvcwt")
   })
@@ -206,3 +207,4 @@ Morlet <- function(lag)
 {
   exp(-lag ^ 2 / 2 + 2i * pi * lag) / pi ^ 4
 }
+
