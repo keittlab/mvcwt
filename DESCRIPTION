@@ -8,3 +8,5 @@ Maintainer: Tim Keitt <tkeitt@gmail.com>
 Depends: foreach, RColorBrewer, grDevices
 Description: This package computes the continuous wavelet transform of irregularly sampled time series.
 License: GPL
+URL: https://bitbucket.org/tkeitt/mvcwt/overview, http://www.keittlab.org
+

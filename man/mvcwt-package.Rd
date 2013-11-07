@@ -15,8 +15,10 @@ License: \tab GPL\cr
 }
 The main functions are \code{\link{mvcwt}}, which computes the wavelet transform of multiple time series, and \code{\link{wmr}}, which computes the wavelet modulus ratio, a measure of time series coherence.
 
-Note that this is a complete rewrite of the code used in the reference below, and as such it is not well tested. It may give different or inaccurate results. I recommend you run tests on known data.}
-\author{Timothy H. Keitt
+Note that this is a complete rewrite of the code used in the reference below, and as such it is not well tested. It may give different or inaccurate results. I recommend you run tests on known data.
+
+The most recent development version of this package can be found at \url{https://bitbucket.org/tkeitt/mvcwt/overview}.}
+\author{Timothy H. Keitt (\url{http://www.keittlab.org})
 
 Tim Keitt <tkeitt@gmail.com>
 }
