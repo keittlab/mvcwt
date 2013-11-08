@@ -17,7 +17,7 @@ mvcwt(x, y,
   \item{x}{sample locations}
   \item{y}{one or more columns of samples corresponding to \code{x}}
   \item{scale.trim}{how many times above and below the minimum and maximum scales to analyze?}
-  \item{scale.exp}{scale output by \eqn{1 / scale ^ scale.exp}}
+  \item{scale.exp}{scale output by \eqn{1 / scale ^ {scale.exp}}
   \item{nscales}{number of scales to analyze}
   \item{min.scale}{minimum scale in units of \code{x}}
   \item{max.scale}{maximum scale in units of \code{x}}
