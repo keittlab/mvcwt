@@ -26,6 +26,8 @@ Tim Keitt <tkeitt@gmail.com>
 \keyword{ package }
 \examples{
 \dontrun{
+  stopifnot(require(foreach))
+  stopifnot(require(RColorBrewer))
   x = seq(-pi, pi, len = 200)
   y1 = sin(8 * x) + sin(32 * x)
   y2 = sin(8 * (x + pi/8)) + sin(32 * x)
