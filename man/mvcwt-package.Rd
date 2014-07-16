@@ -25,9 +25,7 @@ Tim Keitt <tkeitt@gmail.com>
 \references{Keitt, T. H. 2008. Coherent ecological dynamics induced by large-scale disturbance. Nature 454:331-4. doi:10.1038/nature06935.}
 \keyword{ package }
 \examples{
-run.it = getOption("run.long.examples")     
-if ( !is.null(run.it) && run.it )
-{
+\dontrun{
   x = seq(-pi, pi, len = 200)
   y1 = sin(8 * x) + sin(32 * x)
   y2 = sin(8 * (x + pi/8)) + sin(32 * x)
@@ -36,5 +34,6 @@ if ( !is.null(run.it) && run.it )
   plot(w, var = 1:2, scale = 2^seq(log2(min(w$y)), log2(max(w$y)), len = 5))
   mr = wmr(w, smoothing = 2)
   image(mr, reset.par = FALSE)
-  contour(mr, levels = c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99), add = TRUE)
-}}
+  contour(mr, levels = c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99), add = TRUE)}
+}
+

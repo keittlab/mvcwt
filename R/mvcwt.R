@@ -2,16 +2,74 @@
 # All code copyright 2013 Timothy H. Keitt
 #
 
+#' Utility functions
+#' 
+#' Functions for calculating scales and locations to analyze
+#' 
+#' @param min smallest value in sequence
+#' @param max largest value in sequence
+#' @param nbins how many intervals
+#' @param nsteps length of returned sequence
+#' 
+#' @return
+#' \code{get.nscales}: length of \code{x} \code{\link{unlist}}ed and \code{\link{as.vector}}ized.
+#' 
+#' \code{get.min.scale}: twice the median distance between successive values of \code{x}
+#' 
+#' \code{get.max.scale}: 1/2 the maximum distance between values in \code{x}
+#' 
+#' \code{log2Bins}: a sequence of values on a log2 scale
+#' 
+#' \code{regularize}: a regular sequence of values
+#' 
+#' @rdname utils
+#' @export
 get.nscales = function(x) length(as.vector(unlist(x)))
+
+#' @rdname utils
+#' @export
 get.min.scale = function(x) 2 * median(diff(as.vector(unlist(x))))
+
+#' @rdname utils
+#' @export
 get.max.scale = function(x) diff(range(as.vector(unlist(x)))) / 2
-  
+
+#' @rdname utils
+#' @export
+log2Bins = function(min, max, nbins)
+{
+  2 ^ midp(seq(log2(min), log2(max), length = nbins + 1))
+}
+
+#' @rdname utils
+#' @export
+regularize = function(x, nsteps = length(as.vector(unlist(x))))
+{
+  seq(min(x), max(x), length = nsteps)
+}
+
+#' Computes the wavelet transform of a multivariate time series
+#' 
+#' This function takes set a set of seqences as columns in a matrix and
+#' computes the continuous wavelet transform on each.
+#' 
+#' @aliases mvcwt print.mvcwt
+#' @param x sample locations
+#' @param y one or more columns of samples corresponding to \code{x}
+#' @param scale.exp scale output
+#' @param nscales number of scales to analyze
+#' @param min.scale minimum scale in units of \code{x}
+#' @param max.scale maximum scale in units of \code{x}
+#' @param scales a set of scales to analyze; overrides all other scale arguments
+#' @param loc the loci at which to evalues the wavelet function
+#' @param wave.fun a wavelet function
+#' 
+#' @export mvcwt
 mvcwt = function(x, y,
-                 scale.trim = 1,
                  scale.exp = 0.5,
                  nscales = get.nscales(x),
-                 min.scale = scale.trim * get.min.scale(x),
-                 max.scale = get.max.scale(x) / scale.trim,
+                 min.scale = get.min.scale(x),
+                 max.scale = get.max.scale(x),
                  scales = log2Bins(min.scale, max.scale, nscales),
                  loc = regularize(x), wave.fun = "Morlet")
 {
@@ -29,12 +87,45 @@ mvcwt = function(x, y,
   structure(list(x = loc, y = scales, z = w), class = "mvcwt")
 }
 
+#' @export
 print.mvcwt = function(x, ...)
 {
   print(str(x), ...)
   invisible(x)
 }
 
+#' Compute the wavelet modulus ratio of multivariate data
+#' 
+#' Computes the wavelet modulus ratio described in Keitt (2008). A value of one
+#' indicated perfect synchrony among time series and a value of zero, perfect
+#' compensation.
+#' 
+#' @param w an object such as returned by \code{\link{mvcwt}}
+#' @param smoothing width of smoothing kernel; larger values give more
+#' smoothing
+#' 
+#' @return an object of class "mvcwt"
+#' 
+#' @author Timothy H. Keitt
+#' 
+#' @seealso \code{\link{mvcwt}}, \code{\link{image.mvcwt}}
+#' 
+#' @references Keitt, T. H. 2008. Coherent ecological dynamics induced by
+#' large-scale disturbance. Nature 454:331-4. doi:10.1038/nature06935.
+#' 
+#' @keywords wavelets
+#' 
+#' @examples
+#' \dontrun{
+#' data(lrlake)
+#' x = subset(lrlake, Basin == "Treatment", LRL.Day) / 365.25
+#' y = subset(lrlake, Basin == "Treatment", -(1:8))
+#' w = mvcwt(x, y, min.scale = 0.25, max.scale = 4)
+#' mr = wmr(w)
+#' image(mr, reset.par = FALSE)
+#' contour(mr, bound = NA, add = TRUE)}
+#' 
+#' @export wmr
 wmr = function(w, smoothing = 1)
 {
   with(w, {
@@ -58,6 +149,34 @@ wmr = function(w, smoothing = 1)
   })
 }
 
+#' Boot strap p-values for wavelet modulus ratio
+#' 
+#' Performs a phase-randomization bootstrap estimate of the null hypothesis of
+#' independent time series
+#' 
+#' The phases are randomized \code{reps} times for each combination of input
+#' variable and scale. This package depends heavily on the \code{dopar}
+#' function in the \code{foreach} package. If you do not have a lot of cores
+#' available to you, you may need to let this run overnight.
+#' 
+#' @param w an object such as returned by \code{\link{mvcwt}}
+#' @param smoothing degree of smoothing; larger values give greater smoothing
+#' @param reps number of repetitions
+#' @param mr.func a function taking a "mvcwt" object to be applied to each
+#' trial
+#' 
+#' @return an object of class "mvcwt" suitable for use with
+#' \code{\link{contour.mvcwt}}.
+#' 
+#' @author Timothy H. Keitt
+#' 
+#' @seealso \code{\link{mvcwt}}, \code{\link{wmr}}
+#' 
+#' @references Keitt, T. H. 2008. Coherent ecological dynamics induced by
+#' large-scale disturbance. Nature 454:331-4. doi:10.1038/nature06935.
+#' 
+#' @keywords statistics
+#' @export wmr.boot
 wmr.boot = function(w, smoothing = 1, reps = 1000, mr.func = "wmr")
 {
   mr.func = match.fun(mr.func)
@@ -93,6 +212,37 @@ wmr.boot = function(w, smoothing = 1, reps = 1000, mr.func = "wmr")
   })
 }
 
+#' Plot wavelet output
+#' 
+#' Plot multivariate wavelet output across variables, scales or both.
+#' 
+#' Makes one or more plots on the graphics device. Total number of plots is
+#' limited to 10.
+#' 
+#' @param x an object such as produced by \code{\link{mvcwt}}
+#' @param var which variables to plot; can be a vector
+#' @param scale which scales to plot; can be a vector; closest scale is picked
+#' @param titles plot titles on each sub-plot?
+#' @param z.fun apply function to data prior to plotting
+#' @param \dots additional graphical parameters passed to \code{\link{plot}}
+#' 
+#' @return \code{x} is returned invisibly
+#' 
+#' @author Timothy H. Keitt
+#' 
+#' @seealso \code{\link{mvcwt}}
+#' 
+#' @keywords graphics
+#' 
+#' @examples
+#' \dontrun{
+#' data(lrlake)
+#' x = subset(lrlake, Basin == "Reference", LRL.Day) / 365.25
+#' y = subset(lrlake, Basin == "Reference", -(1:8))
+#' w = mvcwt(x, y, min.scale = 0.25, max.scale = 4)
+#' plot(w, var = 1:10)}
+#' 
+#' @export plot.mvcwt
 plot.mvcwt = function(x, var = 1, scale = 1, titles = TRUE, z.fun = "Re", ...)
 {
   z.fun = match.fun(z.fun)
@@ -125,6 +275,37 @@ plot.mvcwt = function(x, var = 1, scale = 1, titles = TRUE, z.fun = "Re", ...)
   invisible(x)
 }
 
+#' Draw a heatmap of a \code{\link{mvcwt}} object
+#' 
+#' Draws one or more heatmaps
+#' 
+#' This function will draw a series of heatmaps on the graphical device. If you
+#' want to add additional graphical elements, set \code{reset.par} to false.
+#' 
+#' @param x an object as returned by \code{\link{mvcwt}}
+#' @param z.fun a function applied to the data before plotting
+#' @param bound if finite, draw lines \code{bound * scale} units inside the
+#' plot boundaries
+#' @param reset.par if true, reset graphical parameters on exit
+#' @param \dots additional arguments passed to \code{\link{image}}
+#' 
+#' @return \code{x} is returned invisibly
+#' 
+#' @author Timothy H. Keitt
+#' 
+#' @seealso \code{\link{mvcwt}}, \code{\link{wmr}}
+#' 
+#' @keywords graphics
+#' 
+#' @examples
+#' \dontrun{
+#' data(lrlake)
+#' x = subset(lrlake, Basin == "Treatment", LRL.Day) / 365.25
+#' y = subset(lrlake, Basin == "Treatment", -(1:8))
+#' w = mvcwt(x, y, min.scale = 0.25, max.scale = 4)
+#' image(w, z.fun = "Mod")}
+#' 
+#' @export image.mvcwt
 image.mvcwt = function(x, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
 {
   z.fun = match.fun(z.fun)
@@ -160,6 +341,38 @@ image.mvcwt = function(x, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
   return(invisible(x))     
 }
 
+#' Make contour plot of a \code{\link{mvcwt}} object
+#' 
+#' Draws a contour plot
+#' 
+#' Draws a contour plot. If you want to add more plotting elements, set
+#' \code{reset.pars} to false.
+#' 
+#' @param x an object produced by \code{\link{mvcwt}} or \code{\link{wmr}}
+#' @param z.fun a function to apply to the data prior to plotting
+#' @param bound if finite, draw boundary lines \code{bound * scale} from plot
+#' boundaries
+#' @param reset.par if true, reset the graphical parameters on exit
+#' @param \dots passed to the \code{\link{contour}} function
+#' 
+#' @return The object \code{x} is returned invisibly.
+#' 
+#' @author Timothy H. Keitt
+#' 
+#' @seealso \code{\link{mvcwt}}, \code{\link{wmr}}
+#' 
+#' @keywords graphics
+#' 
+#' @examples
+#' \dontrun{
+#' data(lrlake)
+#' x = subset(lrlake, Basin == "Treatment", LRL.Day) / 365.25
+#' y = subset(lrlake, Basin == "Treatment", -(1:8))
+#' w = mvcwt(x, y, min.scale = 0.25, max.scale = 4)
+#' mr = wmr(w)
+#' contour(mr)}
+#'   
+#' @export contour.mvcwt
 contour.mvcwt = function(x, z.fun = "Re", bound = 1, reset.par = TRUE, ...)
 {
   z.fun = match.fun(z.fun)
@@ -191,16 +404,6 @@ midp <- function(x)
   (x[-1] + x[-length(x)]) / 2
 }
 
-log2Bins <- function(min, max, nbins)
-{
-  2 ^ midp(seq(log2(min), log2(max), length = nbins + 1))
-}
-
-regularize <- function(x, nsteps = length(as.vector(unlist(x))))
-{
-  seq(min(x), max(x), length = nsteps)
-}
-    
 lagMat <- function(from, to = regularize(from))
 {
   outer(to, from, "-")
@@ -211,6 +414,28 @@ Gauss <- function(lag)
   exp(-lag ^ 2 / 2) / sqrt(2 * pi)
 }
   
+#' The Morlet function
+#' 
+#' Given a sequence of lag distances, this function returns the Morlet wavelet
+#' 
+#' This version of the Morlet is scaled so that the central frequency is
+#' exactly 2Pi radians. This is the simple version of the Morlet, sometimes
+#' referred to as a psuedo-wavelet as it it not precisely normalized, leading
+#' to some leakage into the DC component. It is therefore unsuited to
+#' reconstruction using the inverse transform.
+#' 
+#' @param lag A sequence of lag distances, typically a matrix
+#' @return A set of Morlet filters, typically as a matrix
+#' @author Timothy H. Keitt
+#' @seealso \code{\link{mvcwt}}
+#' @keywords wavelets
+#' @examples
+#' x = seq(-pi, pi, len = 256)
+#' plot(x, Re(Morlet(x)), col = "darkblue", type = "l")
+#' lines(x, Im(Morlet(x)), col = "darkred")
+#' lines(range(x), rep(0, 2), lty = 2)
+#' 
+#' @export Morlet
 Morlet <- function(lag)
 {
   exp(-lag ^ 2 / 2 + 2i * pi * lag) / pi ^ 4
